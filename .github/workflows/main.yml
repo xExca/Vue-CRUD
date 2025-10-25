@@ -16,15 +16,12 @@ concurrency:
 
 jobs:
   build:
-    name: Build
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
@@ -32,32 +29,24 @@ jobs:
       - name: Install deps
         run: npm ci
 
-      - name: Lint (optional)
-        run: npm run lint --if-present
-
-      - name: Test (optional)
-        run: npm test --if-present
-
       - name: Build (Vite)
         run: npm run build
 
-      - name: Configure Pages
+      - name: Configure Pages (auto-enable)
         if: github.event_name != 'pull_request'
         uses: actions/configure-pages@v5
+        with:
+          enablement: true 
 
-      - name: Upload Pages artifact (dist)
+      - name: Upload Pages artifact
         if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
-          name: github-pages
 
   deploy:
-    name: Deploy to GitHub Pages
     needs: build
-    if: >
-      github.event_name != 'pull_request' &&
-      github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
