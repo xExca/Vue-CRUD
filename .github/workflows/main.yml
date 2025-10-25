@@ -1,16 +1,14 @@
-# .github/workflows/main.yaml
 name: CI & Deploy (Vue + Vite)
 
 on:
   push:
-    branches: [ main ]
   pull_request:
   workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write      # needed for deploy to GitHub Pages
-  id-token: write   # needed for deploy to GitHub Pages
+  pages: write
+  id-token: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -18,7 +16,7 @@ concurrency:
 
 jobs:
   build:
-    name: Build & Test
+    name: Build
     runs-on: ubuntu-latest
 
     steps:
@@ -34,33 +32,32 @@ jobs:
       - name: Install deps
         run: npm ci
 
-      # --- Optional: spin up json-server for tests (CI only) ---
-      # - name: Start json-server (CI)
-      #   run: |
-      #     npx json-server --watch db.json --port 3001 &
-      #     echo "Waiting for json-server..."
-      #     npx wait-on http://localhost:3001
-      # ----------------------------------------------------------
-
-      - name: Lint (if present)
+      - name: Lint (optional)
         run: npm run lint --if-present
 
-      - name: Unit tests (if present)
+      - name: Test (optional)
         run: npm test --if-present
 
       - name: Build (Vite)
         run: npm run build
+
+      - name: Configure Pages
+        if: github.event_name != 'pull_request'
+        uses: actions/configure-pages@v5
 
       - name: Upload Pages artifact (dist)
         if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
+          name: github-pages
 
   deploy:
     name: Deploy to GitHub Pages
     needs: build
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    if: >
+      github.event_name != 'pull_request' &&
+      github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
     runs-on: ubuntu-latest
     environment:
       name: github-pages
