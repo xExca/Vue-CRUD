@@ -3,7 +3,7 @@ import axios from 'axios';
 import { reactive } from 'vue';
 import { useToast } from 'vue-toastification';
 
-
+const url = localStorage.getItem('mockAPI');
 const toast = useToast();
 const payload = reactive({
   type: "Full-Time",
@@ -20,7 +20,7 @@ const payload = reactive({
 });
 const handleSubmit = (e) => {
   try {
-    axios.post('http://localhost:8080/jobs', payload).then((response) => {
+    axios.post(`${url}/jobs`, payload).then((response) => {
       if(response.status === 201) {
         toast.success("Job added successfully");
       }

@@ -3,5 +3,5 @@
 </script>
 
 <template>
-  <JobListings limit=20 />
+  <JobListings/>
 </template>

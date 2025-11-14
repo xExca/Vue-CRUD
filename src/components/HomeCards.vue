@@ -1,10 +1,15 @@
 <script setup>
 import Card from '@/components/Card.vue';
 import { RouterLink } from 'vue-router';
+
+const props = defineProps({
+  role: String
+});
+
 </script>
 
 <template>
-  <section class="py-4">
+  <section class="py-4" v-if="!['admin','user','recruiter'].includes(props.role)">
     <div class="container-xl lg:container m-auto">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 rounded-lg">
         <Card bg="bg-green-200">

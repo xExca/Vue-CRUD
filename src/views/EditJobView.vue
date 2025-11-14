@@ -10,6 +10,7 @@ const route = useRoute();
 const router = useRouter();
 
 const jobId = route.params.id;
+const url = localStorage.getItem('mockAPI');
 
 onMounted(async () => {
   await axios.get(`/api/jobs/${jobId}`
@@ -32,8 +33,6 @@ onMounted(async () => {
   })
 });
 
-
-
 const payload = reactive({
   type: "Full-Time",
   title: "",
@@ -54,7 +53,7 @@ const state = reactive({
 })
 const handleSubmit = (e) => {
   try {
-    axios.put(`/api/jobs/${jobId}`, payload).then((response) => {
+    axios.put(`${url}/jobs/${jobId}`, payload).then((response) => {
       if(response.status === 200) {
         toast.success("Job Edit successfully");
         router.push("/jobs");

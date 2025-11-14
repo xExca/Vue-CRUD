@@ -9,7 +9,7 @@ const route = useRoute();
 const router = useRouter();
 const toast = useToast();
 const jobId = route.params.id;
-
+const url = localStorage.getItem('mockAPI');
 const state = reactive({
   job: {},
   isLoading: true,
@@ -17,7 +17,7 @@ const state = reactive({
 
 onMounted(async () => {
   try {
-    await axios.get(`http://localhost:8080/jobs/${jobId}`)
+    await axios.get(`${url}/jobs/${jobId}`)
     .then((response) => {
       state.job = response.data;
     }).finally(() => {
@@ -30,7 +30,7 @@ onMounted(async () => {
 
 const handleDeleteBtn = async () => {
   try {
-    await axios.delete(`/api/jobs/${jobId}`).then(() => {
+    await axios.delete(`${url}/jobs/${jobId}`).then(() => {
       toast.success("Job deleted successfully");
       router.push("/jobs");
     });
