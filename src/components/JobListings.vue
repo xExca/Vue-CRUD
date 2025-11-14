@@ -32,9 +32,6 @@
 
   return [...jobs.value].sort(() => 0.5 - Math.random());
 });
-
-
-  console.log(displayJobs);
 </script>
 
 <template>

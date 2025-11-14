@@ -2,6 +2,9 @@
 import axios from 'axios';
 import { reactive } from 'vue';
 import { useToast } from 'vue-toastification';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const url = localStorage.getItem('mockAPI');
 const toast = useToast();
@@ -11,18 +14,17 @@ const payload = reactive({
   description: "",
   salary: "",
   location: "",
-  company: {
-    name: "",
-    description: "",
-    contactEmail: "",
-    contactPhone: "",
-  },
+  companyName: "",
+  companyDescription: "",
+  companyEmail: "",
+  companyPhone: "",
 });
 const handleSubmit = (e) => {
   try {
     axios.post(`${url}/jobs`, payload).then((response) => {
       if(response.status === 201) {
         toast.success("Job added successfully");
+        router.push("/jobs");
       }
     });
   }
@@ -134,7 +136,7 @@ const handleSubmit = (e) => {
                 >Company Name</label
               >
               <input
-                v-model="payload.company.name"
+                v-model="payload.companyName"
                 type="text"
                 id="company"
                 name="company"
@@ -150,7 +152,7 @@ const handleSubmit = (e) => {
                 >Company Description</label
               >
               <textarea
-                v-model="payload.company.description"
+                v-model="payload.companyDescription"
                 id="company_description"
                 name="company_description"
                 class="border rounded w-full py-2 px-3"
@@ -166,7 +168,7 @@ const handleSubmit = (e) => {
                 >Contact Email</label
               >
               <input
-                v-model="payload.company.contactEmail"
+                v-model="payload.companyEmail"
                 type="email"
                 id="contact_email"
                 name="contact_email"
@@ -182,7 +184,7 @@ const handleSubmit = (e) => {
                 >Contact Phone</label
               >
               <input
-                v-model="payload.company.contactPhone"
+                v-model="payload.companyPhone"
                 type="tel"
                 id="contact_phone"
                 name="contact_phone"
